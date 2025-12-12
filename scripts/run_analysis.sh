@@ -137,20 +137,8 @@ function is_mount_type() {
 
 CONTAINER_MOUNT_DIR="/var/lib/containers"
 
-if [[ -n "$CONTAINER_DIR_OVERRIDE" ]]; then
-	CONTAINER_MOUNT_DIR="$CONTAINER_DIR_OVERRIDE"
-elif [[ $CODESPACES == "true" ]]; then
-	CONTAINER_MOUNT_DIR=$(mktemp -d)
-	echo "GitHub Codespaces environment detected, using $CONTAINER_MOUNT_DIR for container mount"
-elif is_mount_type overlay /var/lib; then
-	if is_mount_type overlay /tmp && ! is_mount_type tmpfs /tmp; then
-		CONTAINER_MOUNT_DIR=$(mktemp -d)
-		echo "Warning: /var/lib is an overlay mount, using $CONTAINER_MOUNT_DIR for container mount"
-	else
-		echo "Environment error: /var/lib is an overlay mount, please set CONTAINER_DIR_OVERRIDE to a directory that is backed by a non-overlay filesystem"
-		exit 1
-	fi
-fi
+CONTAINER_MOUNT_DIR=$(mktemp -d)
+echo "Kali Linux Fix: use $CONTAINER_MOUNT_DIR for container mount"
 
 
 DOCKER_MOUNTS=("-v" "$CONTAINER_MOUNT_DIR:/var/lib/containers" "-v" "$RESULTS_DIR:/results" "-v" "$STATIC_RESULTS_DIR:/staticResults" "-v" "$FILE_WRITE_RESULTS_DIR:/writeResults" "-v" "$LOGS_DIR:/tmp" "-v" "$ANALYZED_PACKAGES_DIR:/analyzedPackages" "-v" "$STRACE_LOGS_DIR:/straceLogs")
